@@ -13,7 +13,7 @@ def changeProxy(PROXY):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--proxy-server=%s' % PROXY)
     chrome = webdriver.Chrome(chrome_options=chrome_options)
-    print("Proxy changing...")
+    print("Proxy changed!")
 
 def getTimeDelay():
     try:
