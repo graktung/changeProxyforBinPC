@@ -13,7 +13,14 @@ def changeProxy(PROXY):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--proxy-server=%s' % PROXY)
     chrome = webdriver.Chrome(chrome_options=chrome_options)
-    chrome.get("http://whatismyipaddress.com")
+    print("Proxy changing...")
+
+def getTimeDelay():
+    try:
+        time_delay = int(argv[1])
+    except:
+        print('[-] run file with command: python PythonProxy.py timedelay')
+        exit(0)   
 
 def main():
     try:
@@ -28,6 +35,7 @@ def main():
         print('file proxylist.txt not found.')
         exit(0)
     for proxy in list_proxy:
+        time_delay = getTimeDelay()
         try:
             proxy = proxy.rstrip()
             print('Proxy:', proxy)
@@ -36,6 +44,7 @@ def main():
         except KeyboardInterrupt:
             exit(0)
         except:
+            print("Error Proxy:", proxy)
             continue
 
 if __name__ == '__main__':
