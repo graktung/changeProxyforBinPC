@@ -1,6 +1,6 @@
 # change Proxy for BinPC
 
-usage: python PythonProxy.py timedelay
+usage: python PythonProxy.py timedelay<br>
 require:
  + selenium module
  + proxylist.txt
