@@ -1,29 +1,34 @@
+import time
+from sys import argv
+
 try:
     import winreg
 except ModuleNotFoundError:
     print('winreg not found.')
-    exit(0)
+    print('Trying to import _winreg')
+    try:
+        import _winreg as winreg
+    except ModuleNotFoundError:
+        print('_winreg not found.')
+        exit(0)
+    except:
+        print('An error occurred.')
+        exit(0)
 except:
     print('An error occurred.')
     exit(0)
-
-def setIS():
-    try:
-        INTERNET_SETTINGS = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-            r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',
-                0, winreg.KEY_ALL_ACCESS)
-        return INTERNET_SETTINGS
-    except:
-        return None
+    
+INTERNET_SETTINGS = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+    r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',
+        0, winreg.KEY_ALL_ACCESS)
 
 def set_key(name, value):
-        INTERNET_SETTINGS = setIS()
-        if not INTERNET_SETTINGS == None:
-            _, reg_type = winreg.QueryValueEx(INTERNET_SETTINGS, name)
-                winreg.SetValueEx(INTERNET_SETTINGS, name, 0, reg_type, value)
-        else:
-            print('Error with internet settings.')
-            exit(0)
+    try:
+        _, reg_type = winreg.QueryValueEx(INTERNET_SETTINGS, name)
+        winreg.SetValueEx(INTERNET_SETTINGS, name, 0, reg_type, value)
+    except:
+        print('Error with internet settings.')
+        exit(0)
 
 def enableProxy():
     set_key('ProxyEnable', 1)
@@ -42,15 +47,38 @@ def getProxyList():
         print('Handling File is error.')
         return None
 
-def changeProxy():
+def changeProxy(time_delay):
     list_proxy = getProxyList()
     if not list_proxy == None:
         enableProxy()
         for proxy in list_proxy:
             print(' Proxy:', proxy)
             try:
-                set_key('ProsyServer', proxy)
+                set_key('ProxyServer', u'{proxy}')
                 print('Changed succesfully!')
+                time.sleep(time_delay)
+            except KeyboardInterrupt:
+                break
             except:
                 print('Error!')
         disableProxy()
+    else:
+        exit(0)
+
+def getTime():
+    try:
+        time_delay = int(argv[1])
+        return time_delay
+    except:
+        print('[-] python ServerProxy.py timedelay')
+        return None
+
+def main():
+    time_delay = getTime()
+    if not time_delay == None:
+        changeProxy(time_delay)
+    else:
+        exit(0)
+
+if __name__ == '__main__':
+    main()
